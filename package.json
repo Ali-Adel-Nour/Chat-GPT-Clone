@@ -11,5 +11,9 @@
     "url": "\"https://github.com/Ali-Adel-Nour/Chat-GBT-Clone\""
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "openai": "^3.2.1"
+  }
 }
