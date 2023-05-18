@@ -4,16 +4,16 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "\"https://github.com/Ali-Adel-Nour/Chat-GBT-Clone\""
+    "server": "npm run watch --prefix server",
+    "client": "npm start --prefix client",
+    "start": "concurrently \"npm run server\" \"npm run client\"",
+    "test": "npm run test --prefix server && npm run test --prefix client"
   },
   "author": "",
   "license": "ISC",
+  "private": true,
   "dependencies": {
-    "dotenv": "^16.0.3",
-    "openai": "^3.2.1"
+    "concurrently": "^8.0.1",
+    "dotenv": "^16.0.3"
   }
 }
