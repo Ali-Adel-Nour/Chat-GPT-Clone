@@ -4,11 +4,10 @@ var express = require('express');
 
 var cors = require('cors');
 
-API_KEY = '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';
+API_KEY = require('./config.js');
 var app = express();
 app.use(express.json());
 app.use(cors());
-API_KEY = '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';
 app.post('/completions', function _callee(req, res) {
   var options, response, data;
   return regeneratorRuntime.async(function _callee$(_context) {
@@ -18,14 +17,14 @@ app.post('/completions', function _callee(req, res) {
           options = {
             method: 'POST',
             headers: {
-              "Authorization": "Bearer ".concat(process.env.API_KEY),
+              "Authorization": "Bearer ".concat(API_KEY),
               "Content-Type": "application/json"
             },
             body: JSON.stringify({
-              model: "gbt-3.5-turbo",
+              model: "gpt-3.5-turbo",
               messages: [{
                 role: "user",
-                content: "how are you?"
+                content: req.body
               }],
               "max-tokens": 100
             })

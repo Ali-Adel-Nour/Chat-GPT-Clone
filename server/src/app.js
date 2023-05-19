@@ -1,26 +1,25 @@
 const express = require('express');
 const cors = require('cors');
-API_KEY = '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'
+API_KEY = require('./config.js')
 const app = express();
 
 app.use(express.json());
-app.use(cors());
+app.use(cors())
 
-API_KEY = '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'
 
 app.post('/completions',async (req,res)=>{
 
   const options = {
     method: 'POST',
     headers: {
-      "Authorization": `Bearer ${process.env.API_KEY}`,
+      "Authorization": `Bearer ${API_KEY}`,
       "Content-Type": "application/json"
     },
     body: JSON.stringify({
-      model: "gbt-3.5-turbo",
+      model: "gpt-3.5-turbo",
       messages: [{
         role: "user",
-        content: "how are you?"
+        content: req.body
       }],
       "max-tokens": 100,
     })

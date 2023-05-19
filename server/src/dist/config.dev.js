@@ -1,4 +1,4 @@
 "use strict";
 
-API_KEY = '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';
+API_KEY = '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';
 module.exports = API_KEY;
