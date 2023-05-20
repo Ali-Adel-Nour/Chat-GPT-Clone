@@ -1,0 +1,26 @@
+/* public/styles/index.css */
+body {
+  background-color: #f2f2f2;
+  font-family: Arial, sans-serif;
+}
+
+h1 {
+  color: #333;
+}
+
+form {
+  margin-top: 20px;
+}
+
+button[type="submit"] {
+  background-color: #f44336;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button[type="submit"]:hover {
+  background-color: #d32f2f;
+}

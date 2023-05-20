@@ -5,9 +5,35 @@ var express = require('express');
 var cors = require('cors');
 
 API_KEY = require('./config.js');
+
+var path = require('path');
+
+var bcrypt = require('bcrypt');
+
+var mongoose = require('mongoose');
+
 var app = express();
+
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config();
+}
+
 app.use(express.json());
 app.use(cors());
+app.set('view-engine', 'ejs');
+app.use(express["static"]('public'));
+app.set('views', path.join(__dirname, '../views'));
+mongoose.set('strictQuery', true);
+mongoose.connect(process.env.DATABASE_URL, {
+  useNewUrlParser: true
+});
+var db = mongoose.connection;
+db.on('error', function (error) {
+  return console.error(error);
+});
+db.once('open', function () {
+  return console.log('Connected to Mongoose');
+});
 app.post('/completions', function _callee(req, res) {
   var options, response, data;
   return regeneratorRuntime.async(function _callee$(_context) {
@@ -55,5 +81,14 @@ app.post('/completions', function _callee(req, res) {
       }
     }
   }, null, null, [[1, 11]]);
+});
+app.get('/index', function (req, res) {
+  res.render('index.ejs');
+});
+app.get('/register', function (req, res) {
+  res.render('register.ejs');
+});
+app.get('/login', function (req, res) {
+  res.render('login.ejs');
 });
 module.exports = app;
