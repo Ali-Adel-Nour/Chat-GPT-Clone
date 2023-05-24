@@ -8,7 +8,7 @@ var userRoutes = require('./routes/user-routes');
 
 var path = require('path');
 
-var bcrypt = require('bcrypt');
+var cookieParser = require('cookie-parser');
 
 var mongoose = require('mongoose');
 
@@ -18,6 +18,7 @@ if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config();
 }
 
+app.use(cookieParser());
 app.use(express.json());
 app.use(cors());
 app.set('view-engine', 'ejs');

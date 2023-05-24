@@ -3,8 +3,9 @@ const express = require('express');
 const cors = require('cors');
 const userRoutes = require('./routes/user-routes');
 const path = require('path');
+const cookieParser = require('cookie-parser');
 
-const bcrypt = require('bcrypt');
+
 
 const mongoose = require('mongoose');
 
@@ -19,7 +20,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 
 
-
+app.use(cookieParser());
 app.use(express.json());
 app.use(cors())
 app.set('view-engine', 'ejs')

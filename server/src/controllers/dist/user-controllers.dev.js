@@ -128,13 +128,19 @@ var login = function login(req, res, next) {
           }, JWT_SECRET_KEY, {
             expiresIn: "1hr"
           });
+          res.cookie(String(existingUser._id), token, {
+            path: '/',
+            expires: new Date(Date.now() + 1000 * 30),
+            httpOnly: true,
+            sameSite: "lax"
+          });
           return _context2.abrupt("return", res.status(200).json({
             message: "Successfly Logged In",
             user: existingUser,
             token: token
           }));
 
-        case 17:
+        case 18:
         case "end":
           return _context2.stop();
       }
@@ -143,11 +149,75 @@ var login = function login(req, res, next) {
 };
 
 var verifyToken = function verifyToken(req, res, next) {
-  var headers = req.headers["authorization"];
-  var token = headers.split('')[1];
-  console.log(headers);
+  var cookies = req.headers.cookie;
+  var token = cookies.split("=")[1];
+  console.log("token");
+
+  if (!token) {
+    res.status(404).json({
+      message: "No token found"
+    });
+  }
+
+  jwt.verify(String(token), JWT_SECRET_KEY, function (err, user) {
+    if (err) {
+      return res.status(400).json({
+        message: "Invaild Token"
+      });
+    }
+
+    console.log(user.id);
+    req.id = user.id;
+  }); // Pass the user object to the next middleware
+
+  next();
+};
+
+var getUser = function getUser(req, res, next) {
+  var userId, user;
+  return regeneratorRuntime.async(function getUser$(_context3) {
+    while (1) {
+      switch (_context3.prev = _context3.next) {
+        case 0:
+          userId = req.id;
+          _context3.prev = 1;
+          _context3.next = 4;
+          return regeneratorRuntime.awrap(User.findById(userId, "-password"));
+
+        case 4:
+          user = _context3.sent;
+          _context3.next = 10;
+          break;
+
+        case 7:
+          _context3.prev = 7;
+          _context3.t0 = _context3["catch"](1);
+          return _context3.abrupt("return", new Error(_context3.t0));
+
+        case 10:
+          if (user) {
+            _context3.next = 12;
+            break;
+          }
+
+          return _context3.abrupt("return", res.status(404).json({
+            message: "User not found"
+          }));
+
+        case 12:
+          return _context3.abrupt("return", res.status(200).json({
+            user: user
+          }));
+
+        case 13:
+        case "end":
+          return _context3.stop();
+      }
+    }
+  }, null, null, [[1, 7]]);
 };
 
 exports.signup = signup;
 exports.login = login;
 exports.verifyToken = verifyToken;
+exports.getUser = getUser;
