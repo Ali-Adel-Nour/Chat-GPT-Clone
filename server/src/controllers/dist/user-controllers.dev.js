@@ -6,7 +6,9 @@ var bcrypt = require('bcryptjs');
 
 var jwt = require('jsonwebtoken');
 
-var JWT_SECRET_KEY = "MyKey";
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config();
+}
 
 var signup = function signup(req, res, next) {
   var _req$body, name, email, password, existingUser, hashedPassword, user;
@@ -119,28 +121,35 @@ var login = function login(req, res, next) {
           }
 
           return _context2.abrupt("return", res.status(400).json({
-            message: "Invaild Email/Password"
+            message: "Inavlid Email / Password"
           }));
 
         case 15:
           token = jwt.sign({
             id: existingUser._id
-          }, JWT_SECRET_KEY, {
-            expiresIn: "1hr"
+          }, process.env.JWT_SECRET_KEY, {
+            expiresIn: "35s"
           });
+          console.log("Generated Token\n", token);
+
+          if (req.cookies["".concat(existingUser._id)]) {
+            req.cookies["".concat(existingUser._id)] = "";
+          }
+
           res.cookie(String(existingUser._id), token, {
-            path: '/',
+            path: "/",
             expires: new Date(Date.now() + 1000 * 30),
+            // 30 seconds
             httpOnly: true,
             sameSite: "lax"
           });
           return _context2.abrupt("return", res.status(200).json({
-            message: "Successfly Logged In",
+            message: "Successfully Logged In",
             user: existingUser,
             token: token
           }));
 
-        case 18:
+        case 20:
         case "end":
           return _context2.stop();
       }
@@ -151,7 +160,6 @@ var login = function login(req, res, next) {
 var verifyToken = function verifyToken(req, res, next) {
   var cookies = req.headers.cookie;
   var token = cookies.split("=")[1];
-  console.log("token");
 
   if (!token) {
     res.status(404).json({
@@ -159,17 +167,16 @@ var verifyToken = function verifyToken(req, res, next) {
     });
   }
 
-  jwt.verify(String(token), JWT_SECRET_KEY, function (err, user) {
+  jwt.verify(String(token), process.env.JWT_SECRET_KEY, function (err, user) {
     if (err) {
       return res.status(400).json({
-        message: "Invaild Token"
+        message: "Invalid TOken"
       });
     }
 
     console.log(user.id);
     req.id = user.id;
-  }); // Pass the user object to the next middleware
-
+  });
   next();
 };
 
@@ -201,7 +208,7 @@ var getUser = function getUser(req, res, next) {
           }
 
           return _context3.abrupt("return", res.status(404).json({
-            message: "User not found"
+            messsage: "User Not FOund"
           }));
 
         case 12:
@@ -217,7 +224,73 @@ var getUser = function getUser(req, res, next) {
   }, null, null, [[1, 7]]);
 };
 
+var refreshToken = function refreshToken(req, res, next) {
+  var cookies = req.headers.cookie;
+  var prevToken = cookies.split("=")[1];
+
+  if (!prevToken) {
+    return res.status(400).json({
+      message: "Couldn't find token"
+    });
+  }
+
+  jwt.verify(String(prevToken), process.env.JWT_SECRET_KEY, function (err, user) {
+    if (err) {
+      console.log(err);
+      return res.status(403).json({
+        message: "Authentication failed"
+      });
+    }
+
+    res.clearCookie("".concat(user.id));
+    req.cookies["".concat(user.id)] = "";
+    var token = jwt.sign({
+      id: user.id
+    }, process.env.JWT_SECRET_KEY, {
+      expiresIn: "35s"
+    });
+    console.log("Regenerated Token\n", token);
+    res.cookie(String(user.id), token, {
+      path: "/",
+      expires: new Date(Date.now() + 1000 * 30),
+      // 30 seconds
+      httpOnly: true,
+      sameSite: "lax"
+    });
+    req.id = user.id;
+    next();
+  });
+};
+
+var logout = function logout(req, res, next) {
+  var cookies = req.headers.cookie;
+  var prevToken = cookies.split("=")[1];
+
+  if (!prevToken) {
+    return res.status(400).json({
+      message: "Couldn't find token"
+    });
+  }
+
+  jwt.verify(String(prevToken), process.env.JWT_SECRET_KEY, function (err, user) {
+    if (err) {
+      console.log(err);
+      return res.status(403).json({
+        message: "Authentication failed"
+      });
+    }
+
+    res.clearCookie("".concat(user.id));
+    req.cookies["".concat(user.id)] = "";
+    return res.status(200).json({
+      message: "Successfully Logged Out"
+    });
+  });
+};
+
+exports.logout = logout;
 exports.signup = signup;
 exports.login = login;
 exports.verifyToken = verifyToken;
 exports.getUser = getUser;
+exports.refreshToken = refreshToken;
