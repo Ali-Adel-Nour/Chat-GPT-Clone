@@ -8,17 +8,15 @@ Clone the repository:
 
 bash
 Copy code
-git clone https://github.com/your-username/chat-gpt-clone.git
-Install the dependencies:
-
-bash
-Copy code
+git clone "https://github.com/Ali-Adel-Nour/Chat-GPT-Clone"
 cd chat-gpt-clone
+cd server
 npm install
+cd ..
+cd client
+npm install
+cd ..
 Start the server:
-
-bash
-Copy code
 npm start
 Access the Chat GPT Clone in your browser at http://localhost:3000.
 
