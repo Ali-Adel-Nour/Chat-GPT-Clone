@@ -5,18 +5,21 @@ import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { authActions } from "../store";
 axios.defaults.withCredentials = true;
+
 const Header = () => {
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state) => state.isLoggedIn);
+
   const sendLogoutReq = async () => {
     const res = await axios.post("http://localhost:8000/api/v1/logout", null, {
       withCredentials: true,
     });
-    if (res.status == 200) {
+    if (res.status === 200) {
       return res;
     }
-    return new Error("Unable TO Logout. Please try again");
+    return new Error("Unable to Logout. Please try again");
   };
+
   const handleLogout = () => {
     sendLogoutReq().then(() => dispatch(authActions.logout()));
   };
@@ -25,7 +28,7 @@ const Header = () => {
 
   return (
     <div>
-      <AppBar position="sticky">
+      <AppBar position="sticky" sx={{ backgroundColor: "#CCCCCC" }}>
         <Toolbar>
           <Typography variant="h3">ChatGPT Clone</Typography>
           <Box sx={{ marginLeft: "auto" }}>
@@ -37,7 +40,6 @@ const Header = () => {
             >
               {!isLoggedIn && (
                 <>
-                  {" "}
                   <Tab to="/login" LinkComponent={Link} label="Login" />
                   <Tab to="/signup" LinkComponent={Link} label="Signup" />
                 </>
@@ -49,7 +51,7 @@ const Header = () => {
                   LinkComponent={Link}
                   label="Logout"
                 />
-              )}{" "}
+              )}
             </Tabs>
           </Box>
         </Toolbar>

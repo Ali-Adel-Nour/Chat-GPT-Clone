@@ -21,7 +21,7 @@ const Welcome = () => {
     };
 
     const sendRequest = async () => {
-      const res = await axios.get("http://localhost:8000/api/user", {
+      const res = await axios.get("http://localhost:8000/api/v1/user", {
         withCredentials: true,
       }).catch((err) => console.log(err));
       const data = await res.data;
@@ -113,8 +113,8 @@ const Welcome = () => {
 
   console.log(previousChats);
 
-  const uniqueTitles = Array.from(new Set(previousChats.map((chat) => chat.title)));
-  const currentChat = previousChats.filter((chat) => chat.title === currentTitle);
+  const currentChat = previousChats.filter(previousChat=>previousChat.title === currentTitle)
+  const uniqueTitles =Array.from(new Set(previousChats.map(previousChat => previousChat.title)))
 
   return (
     <div className="app">
