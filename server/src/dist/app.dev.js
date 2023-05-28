@@ -35,7 +35,7 @@ db.on('error', function (error) {
 });
 db.once('open', function () {
   return console.log('Connected to Mongoose');
-});
+}); //Sorry i tried to solve the problem xDDD
 
 var fetchRandomJoke = function fetchRandomJoke() {
   var response, data, joke;

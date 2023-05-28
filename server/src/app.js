@@ -35,6 +35,10 @@ mongoose.connect(process.env.DATABASE_URL, { useNewUrlParser: true });
 const db = mongoose.connection;
 db.on('error', error => console.error(error));
 db.once('open', () => console.log('Connected to Mongoose'));
+
+
+
+//Sorry i tried to solve the problem xDDD
 const fetchRandomJoke = async () => {
   try {
     const response = await fetch('https://v2.jokeapi.dev/joke/Any');
