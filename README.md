@@ -15,8 +15,6 @@ cd client
 npm install
 cd ..
 Start the server:
-bash
-Copy code
 npm start
 Access the Chat GPT Clone in your browser at http://localhost:3000.
 
